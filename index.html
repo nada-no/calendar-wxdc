@@ -11,8 +11,10 @@
 		<div id="cal-wrap">
 			<!-- (A) PERIOD SELECTOR -->
 			<div id="cal-date">
+				<button id="prevMonth">&#10094;</button>
 				<select id="cal-mth"></select>
 				<select id="cal-yr"></select>
+				<button id="nxtMonth">&#10095;</button>
 			</div>
 
 			<!-- (B) CALENDAR -->
@@ -23,9 +25,9 @@
 				<h1 id="evt-head"></h1>
 				<div id="evt-date"></div>
 				<textarea id="evt-details" required></textarea>
-				<input id="evt-close" type="button" value="Close" />
-				<input id="evt-del" type="button" value="Delete" />
-				<input id="evt-save" type="submit" value="Save" />
+				<button class="eventBtn" id="evt-del" >Delete</button>
+				<button class="eventBtn" id="evt-save" >Save</button>
+				<button class="eventBtn" id="evt-close" >Close</button>
 			</form>
 		</div>
 	</body>

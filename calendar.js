@@ -18,12 +18,14 @@ var cal = {
 	], // Month Names
 
 	// (A2) CALENDAR DATA
-	mthEvents: , // Events for the selected period
+	mthEvents: {}, // Events for the selected period
 	sDay: 0,
 	sMth: 0,
 	sYear: 0, // Current selected day, month, year
 
 	// (A3) COMMON HTML ELEMENTS
+	nxt: null,
+	prev: null,
 	hMth: null,
 	hYear: null, // month/year selector
 	hForm: null,
@@ -31,10 +33,15 @@ var cal = {
 	hfDate: null,
 	hfTxt: null,
 	hfDel: null, // event form
+	hfSave: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
 		// (B1) GET + SET COMMON HTML ELEMENTS
+		cal.nxt = document.getElementById("nxtMonth");
+		cal.nxt.onclick = cal.next;
+		cal.prev = document.getElementById("prevMonth");
+		cal.prev.onclick = cal.previous;
 		cal.hMth = document.getElementById("cal-mth");
 		cal.hYear = document.getElementById("cal-yr");
 		cal.hForm = document.getElementById("cal-event");
@@ -42,9 +49,10 @@ var cal = {
 		cal.hfDate = document.getElementById("evt-date");
 		cal.hfTxt = document.getElementById("evt-details");
 		cal.hfDel = document.getElementById("evt-del");
+		cal.hfSave = document.getElementById("evt-save");
 		document.getElementById("evt-close").onclick = cal.close;
 		cal.hfDel.onclick = cal.del;
-		cal.hForm.onsubmit = cal.save;
+		cal.hfSave.onclick = cal.save;
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
@@ -85,6 +93,28 @@ var cal = {
 		cal.list();
 	},
 
+	//PREVIOUS MONTH
+	previous: () => {
+		if (cal.hMth.value > 0) {
+		cal.hMth.value = Number.parseInt(cal.hMth.value) - 1;
+		} else {
+			cal.hYear.value = Number.parseInt(cal.hYear.value) - 1;
+			cal.hMth.value = "11";
+		}
+		cal.list();
+	},
+
+	//NEXT MONTH
+	next: () => {
+		if (cal.hMth.value < 11) {
+			cal.hMth.value = Number.parseInt(cal.hMth.value) + 1;
+		} else {
+			cal.hYear.value = Number.parseInt(cal.hYear.value) + 1;
+			cal.hMth.value = "0";
+		}
+		cal.list();
+	},
+
 	// (C) DRAW CALENDAR FOR SELECTED MONTH
 	list: () => {
 		// (C1) BASIC CALCULATIONS - DAYS IN MONTH, START + END DAY
@@ -102,7 +132,8 @@ var cal = {
 				cal.sMth == nowMth && cal.sYear == nowYear ? now.getDate() : null;
 
 		// (C2) LOAD DATA FROM LOCALSTORAGE
-		// cal.data = localStorage.getItem("cal-" + cal.sMth + "-" + cal.sYear);
+		cal.mthEvents = {};
+
 		//get updates from localstorage
 		let wxdcUpdates = window.webxdc.getAllUpdates();
 
@@ -112,9 +143,17 @@ var cal = {
 		} else {
 			// cal.data = JSON.parse(cal.data);
 			//get this month events from the updates
-			cal.mthEvents = wxdcUpdates.filter((updt) => {
-				return updt.payload.month == cal.sMth && updt.payload.year == cal.sYear;
-			});
+			for (let i = 0; i < wxdcUpdates.length; i++) {
+				if (
+					wxdcUpdates[i].payload.month == cal.sMth &&
+					wxdcUpdates[i].payload.year == cal.sYear
+				) {
+					cal.mthEvents[wxdcUpdates[i].payload.day] = wxdcUpdates[i].payload;
+				}
+			}
+			// cal.mthEvents = wxdcUpdates.filter((updt) => {
+			// 	return updt.payload.month == cal.sMth && updt.payload.year == cal.sYear;
+			// });
 			console.log(cal.mthEvents);
 		}
 
@@ -154,60 +193,57 @@ var cal = {
 
 		// (C4) DRAW HTML CALENDAR
 		// Get container
-		let container = document.getElementById("cal-container"),
-			cTable = document.createElement("table");
-		cTable.id = "calendar";
+		let container = document.getElementById("cal-container");
+		// cTable = document.createElement("table");
+		// cTable.id = "calendar";
 		container.innerHTML = "";
-		container.appendChild(cTable);
+		// container.appendChild(cTable);
 
 		// First row - Day names
-		let cRow = document.createElement("tr"),
-			days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+		// let cRow = document.createElement("tr"),
+		days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 		if (cal.sMon) {
 			days.push(days.shift());
 		}
 		for (let d of days) {
-			let cCell = document.createElement("td");
+			let cCell = document.createElement("div");
 			cCell.innerHTML = d;
-			cRow.appendChild(cCell);
+			container.appendChild(cCell);
+			cCell.classList.add("head");
 		}
-		cRow.classList.add("head");
-		cTable.appendChild(cRow);
+		// cTable.appendChild(cRow);
 
 		// Days in Month
 		let total = squares.length;
-		cRow = document.createElement("tr");
-		cRow.classList.add("day");
+		// cRow = document.createElement("tr");
+		// cRow.classList.add("day");
 		for (let i = 0; i < total; i++) {
-			let cCell = document.createElement("td");
+			let cCell = document.createElement("div");
 			if (squares[i] == "b") {
 				cCell.classList.add("blank");
 			} else {
 				if (nowDay == squares[i]) {
 					cCell.classList.add("today");
+				} else {
+					cCell.classList.add("day");
 				}
 				cCell.innerHTML = `<div class="dd">${squares[i]}</div>`;
-				var todayEvent = cal.mthEvents.find(
-					(event) => event.payload.day == squares[i]
-				);
-				if (todayEvent != null) {
-          if(todayEvent.payload.addition){
-					cCell.innerHTML +=
-						"<div class='evt'>" + todayEvent.payload.data + "</div>";
-          } else {
-            cCell.innerHTML += "";
-          }
+				// var todayEvent = cal.mthEvents.find(
+				// 	(event) => event.payload.day == squares[i]
+				// );
+				if (cal.mthEvents[squares[i]] != null) {
+					if (cal.mthEvents[squares[i]].addition) {
+						cCell.innerHTML +=
+							"<div class='evt'>" + cal.mthEvents[squares[i]].data + "</div>";
+					} else {
+						cCell.innerHTML += "";
+					}
 				}
 				cCell.onclick = () => {
 					cal.show(cCell);
 				};
 			}
-			cRow.appendChild(cCell);
-			if (i != 0 && (i + 1) % 7 == 0) {
-				cTable.appendChild(cRow);
-				cRow = document.createElement("tr");
-				cRow.classList.add("day");
-			}
+			container.appendChild(cCell);
 		}
 
 		// (C5) REMOVE ANY PREVIOUS ADD/EDIT EVENT DOCKET
@@ -219,13 +255,11 @@ var cal = {
 		// (D1) FETCH EXISTING DATA
 		cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
 		// let isEdit = cal.mthEvents[cal.sDay] !== undefined;
-    let isEdit = cal.mthEvents.find((event)=>{
-      return event.payload.day = cal.sDay;
-    });
+		let isEdit = cal.mthEvents[cal.sDay] ? true : false;
 		// let isEdit = false;
 
 		// (D2) UPDATE EVENT FORM
-		cal.hfTxt.value = isEdit ? isEdit.payload.data : "";
+		cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
 		cal.hfHead.innerHTML = isEdit ? "EDIT EVENT" : "ADD EVENT";
 		cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
 		if (isEdit) {
@@ -252,7 +286,7 @@ var cal = {
 					month: cal.sMth,
 					year: cal.sYear,
 					data: cal.hfTxt.value,
-          addition: true,
+					addition: true,
 				},
 				info,
 			},
@@ -271,21 +305,21 @@ var cal = {
 			// );
 			// cal.list();
 
-      	// send new updates
-		var info = window.webxdc.selfName + " created an event";
-		window.webxdc.sendUpdate(
-			{
-				payload: {
-					day: cal.sDay,
-					month: cal.sMth,
-					year: cal.sYear,
-					data: cal.hfTxt.value,
-          addition: false,
+			// send new updates
+			var info = window.webxdc.selfName + " deleted an event";
+			window.webxdc.sendUpdate(
+				{
+					payload: {
+						day: cal.sDay,
+						month: cal.sMth,
+						year: cal.sYear,
+						data: cal.hfTxt.value,
+						addition: false,
+					},
+					info,
 				},
-				info,
-			},
-			info
-		);
+				info
+			);
 		}
 	},
 };
