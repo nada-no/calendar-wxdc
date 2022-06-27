@@ -58,7 +58,7 @@ var cal = {
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
-			cal.events.push(update);
+			cal.events.push(update.payload);
 			cal.list();
 		});
 
@@ -138,29 +138,15 @@ var cal = {
 		cal.mthEvents = {};
 
 		//get updates from localstorage
-		let wxdcUpdates = cal.events;
-		// wxdcUpdates = JSON.parse(wxdcUpdates);
-		console.log(wxdcUpdates);
+		console.log(cal.events);
 
-		if (wxdcUpdates == null) {
-			// localStorage.setItem("cal-" + cal.sMth + "-" + cal.sYear, "{}");
-			wxdcUpdates = [];
-		} else {
-			// cal.data = JSON.parse(cal.data);
-			//get this month events from the updates
-			for (let i = 0; i < wxdcUpdates.length; i++) {
-				if (
-					wxdcUpdates[i].payload.month == cal.sMth &&
-					wxdcUpdates[i].payload.year == cal.sYear
-				) {
-					cal.mthEvents[wxdcUpdates[i].payload.day] = wxdcUpdates[i].payload;
-				}
+		//get this month events from the updates
+		for (let i = 0; i < cal.events.length; i++) {
+			if (cal.events[i].month == cal.sMth && cal.events[i].year == cal.sYear) {
+				cal.mthEvents[cal.events[i].day] = cal.events[i];
 			}
-			// cal.mthEvents = wxdcUpdates.filter((updt) => {
-			// 	return updt.payload.month == cal.sMth && updt.payload.year == cal.sYear;
-			// });
-			console.log(cal.mthEvents);
 		}
+		console.log(cal.mthEvents);
 
 		// (C3) DRAWING CALCULATIONS
 		// Blank squares before start of month
@@ -199,13 +185,9 @@ var cal = {
 		// (C4) DRAW HTML CALENDAR
 		// Get container
 		let container = document.getElementById("cal-container");
-		// cTable = document.createElement("table");
-		// cTable.id = "calendar";
 		container.innerHTML = "";
-		// container.appendChild(cTable);
 
 		// First row - Day names
-		// let cRow = document.createElement("tr"),
 		days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 		if (cal.sMon) {
 			days.push(days.shift());
@@ -216,12 +198,9 @@ var cal = {
 			container.appendChild(cCell);
 			cCell.classList.add("head");
 		}
-		// cTable.appendChild(cRow);
 
 		// Days in Month
 		let total = squares.length;
-		// cRow = document.createElement("tr");
-		// cRow.classList.add("day");
 		for (let i = 0; i < total; i++) {
 			let cCell = document.createElement("div");
 			if (squares[i] == "b") {
@@ -233,9 +212,7 @@ var cal = {
 					cCell.classList.add("day");
 				}
 				cCell.innerHTML = `<div class="dd">${squares[i]}</div>`;
-				// var todayEvent = cal.mthEvents.find(
-				// 	(event) => event.payload.day == squares[i]
-				// );
+			
 				if (cal.mthEvents[squares[i]] != null) {
 					if (cal.mthEvents[squares[i]].addition) {
 						cCell.innerHTML +=
@@ -259,9 +236,7 @@ var cal = {
 	show: (el) => {
 		// (D1) FETCH EXISTING DATA
 		cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
-		// let isEdit = cal.mthEvents[cal.sDay] !== undefined;
 		let isEdit = cal.mthEvents[cal.sDay] ? true : false;
-		// let isEdit = false;
 
 		// (D2) UPDATE EVENT FORM
 		cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
@@ -292,6 +267,7 @@ var cal = {
 					year: cal.sYear,
 					data: cal.hfTxt.value,
 					addition: true,
+					creator: window.webxdc.selfName,
 				},
 				info,
 			},
