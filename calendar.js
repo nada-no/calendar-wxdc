@@ -35,6 +35,7 @@ var cal = {
 	hfDel: null, // event form
 	hfSave: null,
 	events: null,
+	eventsView: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -55,6 +56,8 @@ var cal = {
 		cal.hfDel.onclick = cal.del;
 		cal.hfSave.onclick = cal.save;
 		cal.events = [];
+		cal.eventsView = document.getElementById("eventsDay");
+		cal.eventsView.classList.add("ninja");
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
@@ -135,18 +138,37 @@ var cal = {
 				cal.sMth == nowMth && cal.sYear == nowYear ? now.getDate() : null;
 
 		// (C2) LOAD DATA FROM LOCALSTORAGE
-		cal.mthEvents = {};
+		cal.mthEvents = [];
 
 		//get updates from localstorage
+		console.log("eventos generales");
 		console.log(cal.events);
 
 		//get this month events from the updates
-		for (let i = 0; i < cal.events.length; i++) {
-			if (cal.events[i].month == cal.sMth && cal.events[i].year == cal.sYear) {
-				cal.mthEvents[cal.events[i].day] = cal.events[i];
-			}
-		}
+		cal.mthEvents = cal.events.filter((event)=>{
+			return event.month == cal.sMth && event.year == cal.sYear
+		});
+		console.log("eventos este mes");
 		console.log(cal.mthEvents);
+
+		// for (let i = 0; i < cal.events.length; i++) {
+		// 	//some vars
+		// 	var event = cal.events[i];
+		// 	var day = cal.events[i].day;
+		// 	var month = cal.events[i].month;
+		// 	var year = cal.events[i].year;
+		// 	var dayEvents = cal.mthEvents[day];
+
+		// 	if (month == cal.sMth && year == cal.sYear) {
+		// 		if (!dayEvents) {
+		// 			dayEvents = [];
+		// 			dayEvents.push(event);
+		// 		} else {
+		// 			dayEvents.push(event);
+		// 		}
+		// 	}
+		// }
+		// console.log(cal.mthEvents);
 
 		// (C3) DRAWING CALCULATIONS
 		// Blank squares before start of month
@@ -202,23 +224,25 @@ var cal = {
 		// Days in Month
 		let total = squares.length;
 		for (let i = 0; i < total; i++) {
+			var day = squares[i];
 			let cCell = document.createElement("div");
-			if (squares[i] == "b") {
+			if (day == "b") {
 				cCell.classList.add("blank");
 			} else {
-				if (nowDay == squares[i]) {
+				if (nowDay == day) {
 					cCell.classList.add("today");
 				} else {
 					cCell.classList.add("day");
 				}
-				cCell.innerHTML = `<div class="dd">${squares[i]}</div>`;
-			
-				if (cal.mthEvents[squares[i]] != null) {
-					if (cal.mthEvents[squares[i]].addition) {
-						cCell.innerHTML +=
-							"<div class='evt'>" + cal.mthEvents[squares[i]].data + "</div>";
-					} else {
-						cCell.innerHTML += "";
+				cCell.innerHTML = `<div class="dd">${day}</div>`;
+
+				//retrieve events for this day
+				var eventsDay = cal.getEvents(day);
+				if (eventsDay.length !== 0) {
+					console.log("hay eventos en el dia");
+					for (let j = 0; j < eventsDay.length; j++) {
+							cCell.innerHTML +=
+								"<div data-index='" + j +"' class='evt'>" + eventsDay[j].data + "</div>";
 					}
 				}
 				cCell.onclick = () => {
@@ -235,24 +259,42 @@ var cal = {
 	// (D) SHOW EDIT EVENT DOCKET FOR SELECTED DAY
 	show: (el) => {
 		// (D1) FETCH EXISTING DATA
-		cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
+		cal.sDay = Number.parseInt(el.getElementsByClassName("dd")[0].innerHTML);
+		let dayEvents = cal.getEvents(cal.sDay);
 		let isEdit = cal.mthEvents[cal.sDay] ? true : false;
-
-		// (D2) UPDATE EVENT FORM
-		cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
-		cal.hfHead.innerHTML = isEdit ? "EDIT EVENT" : "ADD EVENT";
-		cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
-		if (isEdit) {
-			cal.hfDel.classList.remove("ninja");
-		} else {
-			cal.hfDel.classList.add("ninja");
+		for (const i in dayEvents) {
+			var eventBox = document.createElement("div");
+			eventBox.textContent = dayEvents[i].data;
+			eventBox.classList.add("evt-view");
+			cal.eventsView.appendChild(eventBox);
 		}
-		cal.hForm.classList.remove("ninja");
+		cal.eventsView.classList.remove("ninja");
+
+
+
+		// // (D2) UPDATE EVENT FORM
+		// cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
+		// cal.hfHead.innerHTML = isEdit ? "EDIT EVENT" : "ADD EVENT";
+		// cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
+		// if (isEdit) {
+		// 	cal.hfDel.classList.remove("ninja");
+		// } else {
+		// 	cal.hfDel.classList.add("ninja");
+		// }
+		// cal.hForm.classList.remove("ninja");
 	},
 
 	// (E) CLOSE EVENT DOCKET
 	close: () => {
 		cal.hForm.classList.add("ninja");
+	},
+
+	// GET ALL EVENTS FROM A DAY
+	getEvents: (day) => {
+		var events = cal.mthEvents.filter((event)=>{
+			return event.day === day;
+		});
+		return events;
 	},
 
 	// (F) SAVE EVENT
@@ -288,6 +330,7 @@ var cal = {
 					year: cal.sYear,
 					data: cal.hfTxt.value,
 					addition: false,
+					deleter: window.webxdc.selfName,
 				},
 				info,
 			},
