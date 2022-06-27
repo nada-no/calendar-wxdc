@@ -34,6 +34,7 @@ var cal = {
 	hfTxt: null,
 	hfDel: null, // event form
 	hfSave: null,
+	events: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -53,9 +54,11 @@ var cal = {
 		document.getElementById("evt-close").onclick = cal.close;
 		cal.hfDel.onclick = cal.del;
 		cal.hfSave.onclick = cal.save;
+		cal.events = [];
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
+			cal.events.push(update);
 			cal.list();
 		});
 
@@ -96,7 +99,7 @@ var cal = {
 	//PREVIOUS MONTH
 	previous: () => {
 		if (cal.hMth.value > 0) {
-		cal.hMth.value = Number.parseInt(cal.hMth.value) - 1;
+			cal.hMth.value = Number.parseInt(cal.hMth.value) - 1;
 		} else {
 			cal.hYear.value = Number.parseInt(cal.hYear.value) - 1;
 			cal.hMth.value = "11";
@@ -135,7 +138,9 @@ var cal = {
 		cal.mthEvents = {};
 
 		//get updates from localstorage
-		let wxdcUpdates = window.webxdc.getAllUpdates();
+		let wxdcUpdates = cal.events;
+		// wxdcUpdates = JSON.parse(wxdcUpdates);
+		console.log(wxdcUpdates);
 
 		if (wxdcUpdates == null) {
 			// localStorage.setItem("cal-" + cal.sMth + "-" + cal.sYear, "{}");
@@ -297,30 +302,21 @@ var cal = {
 
 	// (G) DELETE EVENT FOR SELECTED DATE
 	del: () => {
-		if (confirm("Delete event?")) {
-			// delete cal.data[cal.sDay];
-			// localStorage.setItem(
-			// 	`cal-${cal.sMth}-${cal.sYear}`,
-			// 	JSON.stringify(cal.data)
-			// );
-			// cal.list();
-
-			// send new updates
-			var info = window.webxdc.selfName + " deleted an event";
-			window.webxdc.sendUpdate(
-				{
-					payload: {
-						day: cal.sDay,
-						month: cal.sMth,
-						year: cal.sYear,
-						data: cal.hfTxt.value,
-						addition: false,
-					},
-					info,
+		// send new updates
+		var info = window.webxdc.selfName + " deleted an event";
+		window.webxdc.sendUpdate(
+			{
+				payload: {
+					day: cal.sDay,
+					month: cal.sMth,
+					year: cal.sYear,
+					data: cal.hfTxt.value,
+					addition: false,
 				},
-				info
-			);
-		}
+				info,
+			},
+			info
+		);
 	},
 };
 window.addEventListener("load", cal.init);

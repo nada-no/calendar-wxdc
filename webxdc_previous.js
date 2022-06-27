@@ -1,6 +1,4 @@
-// debug friend: document.writeln(JSON.stringify(value));
-//@ts-check
-/** @type {import('./webxdc').Webxdc<any>} */
+
 window.webxdc = (() => {
     var updateListener = (_) => {};
     var updatesKey = "__xdcUpdatesKey__";
@@ -37,8 +35,8 @@ window.webxdc = (() => {
             updateListener = cb;
         },
         getAllUpdates: () => {
-            console.log('[Webxdc] WARNING: getAllUpdates() is deprecated.');
-            return Promise.resolve([]);
+            // console.log('[Webxdc] WARNING: getAllUpdates() is deprecated.');
+            return getUpdates();
         },
         sendUpdate: (update, description) => {
             var updates = getUpdates();
