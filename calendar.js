@@ -36,6 +36,7 @@ var cal = {
 	hfSave: null,
 	events: null,
 	eventsView: null,
+	evCards: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -46,7 +47,6 @@ var cal = {
 		cal.prev.onclick = cal.previous;
 		cal.hMth = document.getElementById("cal-mth");
 		cal.hYear = document.getElementById("cal-yr");
-		cal.hForm = document.getElementById("cal-event");
 		cal.hfHead = document.getElementById("evt-head");
 		cal.hfDate = document.getElementById("evt-date");
 		cal.hfTxt = document.getElementById("evt-details");
@@ -58,10 +58,16 @@ var cal = {
 		cal.events = [];
 		cal.eventsView = document.getElementById("eventsDay");
 		cal.eventsView.classList.add("ninja");
+		cal.evCards = document.getElementById("evt-cards");
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
+			if(update.payload.addition){
 			cal.events.push(update.payload);
+			} else {
+				var index = cal.events.findIndex(obj => {return obj.id === update.id});
+				cal.events.splice(index, 1);
+			}
 			cal.list();
 		});
 
@@ -140,9 +146,8 @@ var cal = {
 		// (C2) LOAD DATA FROM LOCALSTORAGE
 		cal.mthEvents = [];
 
-		//get updates from localstorage
-		console.log("eventos generales");
-		console.log(cal.events);
+		//remove deleted events
+	
 
 		//get this month events from the updates
 		cal.mthEvents = cal.events.filter((event)=>{
@@ -242,7 +247,7 @@ var cal = {
 					console.log("hay eventos en el dia");
 					for (let j = 0; j < eventsDay.length; j++) {
 							cCell.innerHTML +=
-								"<div data-index='" + j +"' class='evt'>" + eventsDay[j].data + "</div>";
+								"<div class='evt'>" + eventsDay[j].data + "</div>";
 					}
 				}
 				cCell.onclick = () => {
@@ -261,21 +266,33 @@ var cal = {
 		// (D1) FETCH EXISTING DATA
 		cal.sDay = Number.parseInt(el.getElementsByClassName("dd")[0].innerHTML);
 		let dayEvents = cal.getEvents(cal.sDay);
+
+		//ADD EVENT BOXES 
 		let isEdit = cal.mthEvents[cal.sDay] ? true : false;
+		cal.evCards.innerHTML = "";
 		for (const i in dayEvents) {
 			var eventBox = document.createElement("div");
+			var remove = document.createElement("span");
+			remove.innerHTML = "&#x2715";
+remove.onclick = ()=>{
+	cal.del(remove.parentNode.getAttribute("data-id"));
+};
 			eventBox.textContent = dayEvents[i].data;
+			eventBox.appendChild(remove);
+			eventBox.setAttribute("data-id",dayEvents[i].id);
 			eventBox.classList.add("evt-view");
-			cal.eventsView.appendChild(eventBox);
+			cal.evCards.appendChild(eventBox);
 		}
+
+
 		cal.eventsView.classList.remove("ninja");
 
 
 
 		// // (D2) UPDATE EVENT FORM
 		// cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
-		// cal.hfHead.innerHTML = isEdit ? "EDIT EVENT" : "ADD EVENT";
-		// cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
+		cal.hfHead.innerHTML = isEdit ? "EDIT EVENT" : "ADD EVENT";
+		cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
 		// if (isEdit) {
 		// 	cal.hfDel.classList.remove("ninja");
 		// } else {
@@ -286,7 +303,7 @@ var cal = {
 
 	// (E) CLOSE EVENT DOCKET
 	close: () => {
-		cal.hForm.classList.add("ninja");
+		cal.eventsView.classList.add("ninja");
 	},
 
 	// GET ALL EVENTS FROM A DAY
@@ -304,6 +321,7 @@ var cal = {
 		window.webxdc.sendUpdate(
 			{
 				payload: {
+					id: Date.now(),
 					day: cal.sDay,
 					month: cal.sMth,
 					year: cal.sYear,
@@ -319,12 +337,14 @@ var cal = {
 	},
 
 	// (G) DELETE EVENT FOR SELECTED DATE
-	del: () => {
+	del: (id) => {
 		// send new updates
 		var info = window.webxdc.selfName + " deleted an event";
+		console.log(id);
 		window.webxdc.sendUpdate(
 			{
 				payload: {
+					id: id,
 					day: cal.sDay,
 					month: cal.sMth,
 					year: cal.sYear,
