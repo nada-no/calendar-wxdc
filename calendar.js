@@ -29,13 +29,13 @@ var cal = {
 	hMth: null,
 	hYear: null, // month/year selector
 	hForm: null,
-	hfHead: null,
 	hfDate: null,
 	hfTxt: null, //event form
 	hfSave: null,
 	events: null,
 	eventsView: null,
 	evCards: null,
+	alert: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -46,7 +46,6 @@ var cal = {
 		cal.prev.onclick = cal.previous;
 		cal.hMth = document.getElementById("cal-mth");
 		cal.hYear = document.getElementById("cal-yr");
-		cal.hfHead = document.getElementById("evt-head");
 		cal.hfDate = document.getElementById("evt-date");
 		cal.hfTxt = document.getElementById("evt-details");
 		cal.hfSave = document.getElementById("evt-save");
@@ -56,6 +55,8 @@ var cal = {
 		cal.eventsView = document.getElementById("eventsDay");
 		cal.eventsView.classList.add("ninja");
 		cal.evCards = document.getElementById("evt-cards");
+		cal.alert = document.getElementById("alert");
+		cal.alert.classList.add("ninja");
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
@@ -246,7 +247,7 @@ var cal = {
 		let dayEvents = cal.getEvents(cal.sDay);
 
 		//ADD EVENT BOXES
-		let isEdit = cal.mthEvents[cal.sDay] ? true : false;
+		cal.hfTxt.value = "";
 		cal.evCards.innerHTML = "";
 		for (const i in dayEvents) {
 			var eventBox = document.createElement("div");
@@ -259,22 +260,14 @@ var cal = {
 			eventBox.textContent = dayEvents[i].data;
 			eventBox.appendChild(remove);
 			eventBox.classList.add("evt-view");
-			
+
 			cal.evCards.appendChild(eventBox);
 		}
 
 		cal.eventsView.classList.remove("ninja");
 
 		// // (D2) UPDATE EVENT FORM
-		// cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
-		cal.hfHead.innerHTML = isEdit ? "EDIT EVENT" : "ADD EVENT";
 		cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
-		// if (isEdit) {
-		// 	cal.hfDel.classList.remove("ninja");
-		// } else {
-		// 	cal.hfDel.classList.add("ninja");
-		// }
-		// cal.hForm.classList.remove("ninja");
 	},
 
 	// (E) CLOSE EVENT DOCKET
@@ -292,24 +285,28 @@ var cal = {
 
 	// (F) SAVE EVENT
 	save: () => {
-		// send new updates
-		var info = window.webxdc.selfName + " created an event";
-		window.webxdc.sendUpdate(
-			{
-				payload: {
-					id: Date.now(),
-					day: cal.sDay,
-					month: cal.sMth,
-					year: cal.sYear,
-					data: cal.hfTxt.value,
-					addition: true,
-					creator: window.webxdc.selfName,
+		if (cal.hfTxt.value !== "") {
+			// send new updates
+			var info = window.webxdc.selfName + " created an event";
+			window.webxdc.sendUpdate(
+				{
+					payload: {
+						id: Date.now(),
+						day: cal.sDay,
+						month: cal.sMth,
+						year: cal.sYear,
+						data: cal.hfTxt.value,
+						addition: true,
+						creator: window.webxdc.selfName,
+					},
+					info,
 				},
-				info,
-			},
-			info
-		);
-		return false;
+				info
+			);
+			return false;
+		} else {
+			cal.alert.classList.remove("ninja");
+		}
 	},
 
 	// (G) DELETE EVENT FOR SELECTED DATE
