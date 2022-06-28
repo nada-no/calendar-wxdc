@@ -31,8 +31,7 @@ var cal = {
 	hForm: null,
 	hfHead: null,
 	hfDate: null,
-	hfTxt: null,
-	hfDel: null, // event form
+	hfTxt: null, //event form
 	hfSave: null,
 	events: null,
 	eventsView: null,
@@ -50,10 +49,8 @@ var cal = {
 		cal.hfHead = document.getElementById("evt-head");
 		cal.hfDate = document.getElementById("evt-date");
 		cal.hfTxt = document.getElementById("evt-details");
-		cal.hfDel = document.getElementById("evt-del");
 		cal.hfSave = document.getElementById("evt-save");
 		document.getElementById("evt-close").onclick = cal.close;
-		cal.hfDel.onclick = cal.del;
 		cal.hfSave.onclick = cal.save;
 		cal.events = [];
 		cal.eventsView = document.getElementById("eventsDay");
@@ -62,10 +59,14 @@ var cal = {
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
-			if(update.payload.addition){
-			cal.events.push(update.payload);
+			if (update.payload.addition) {
+				cal.events.push(update.payload);
 			} else {
-				var index = cal.events.findIndex(obj => {return obj.id === update.id});
+				var index = cal.events.findIndex((obj) => {
+					console.log(obj.id + " != " + update.payload.id);
+					return Number.parseInt(obj.id) === Number.parseInt(update.payload.id);
+				});
+				console.log(index);
 				cal.events.splice(index, 1);
 			}
 			cal.list();
@@ -147,33 +148,11 @@ var cal = {
 		cal.mthEvents = [];
 
 		//remove deleted events
-	
 
 		//get this month events from the updates
-		cal.mthEvents = cal.events.filter((event)=>{
-			return event.month == cal.sMth && event.year == cal.sYear
+		cal.mthEvents = cal.events.filter((event) => {
+			return event.month == cal.sMth && event.year == cal.sYear;
 		});
-		console.log("eventos este mes");
-		console.log(cal.mthEvents);
-
-		// for (let i = 0; i < cal.events.length; i++) {
-		// 	//some vars
-		// 	var event = cal.events[i];
-		// 	var day = cal.events[i].day;
-		// 	var month = cal.events[i].month;
-		// 	var year = cal.events[i].year;
-		// 	var dayEvents = cal.mthEvents[day];
-
-		// 	if (month == cal.sMth && year == cal.sYear) {
-		// 		if (!dayEvents) {
-		// 			dayEvents = [];
-		// 			dayEvents.push(event);
-		// 		} else {
-		// 			dayEvents.push(event);
-		// 		}
-		// 	}
-		// }
-		// console.log(cal.mthEvents);
 
 		// (C3) DRAWING CALCULATIONS
 		// Blank squares before start of month
@@ -244,10 +223,9 @@ var cal = {
 				//retrieve events for this day
 				var eventsDay = cal.getEvents(day);
 				if (eventsDay.length !== 0) {
-					console.log("hay eventos en el dia");
 					for (let j = 0; j < eventsDay.length; j++) {
-							cCell.innerHTML +=
-								"<div class='evt'>" + eventsDay[j].data + "</div>";
+						cCell.innerHTML +=
+							"<div class='evt'>" + eventsDay[j].data + "</div>";
 					}
 				}
 				cCell.onclick = () => {
@@ -267,27 +245,25 @@ var cal = {
 		cal.sDay = Number.parseInt(el.getElementsByClassName("dd")[0].innerHTML);
 		let dayEvents = cal.getEvents(cal.sDay);
 
-		//ADD EVENT BOXES 
+		//ADD EVENT BOXES
 		let isEdit = cal.mthEvents[cal.sDay] ? true : false;
 		cal.evCards.innerHTML = "";
 		for (const i in dayEvents) {
 			var eventBox = document.createElement("div");
 			var remove = document.createElement("span");
 			remove.innerHTML = "&#x2715";
-remove.onclick = ()=>{
-	cal.del(remove.parentNode.getAttribute("data-id"));
-};
+			remove.setAttribute("data-id", dayEvents[i].id);
+			remove.onclick = (ev) => {
+				cal.del(ev.target.getAttribute("data-id"));
+			};
 			eventBox.textContent = dayEvents[i].data;
 			eventBox.appendChild(remove);
-			eventBox.setAttribute("data-id",dayEvents[i].id);
 			eventBox.classList.add("evt-view");
+			
 			cal.evCards.appendChild(eventBox);
 		}
 
-
 		cal.eventsView.classList.remove("ninja");
-
-
 
 		// // (D2) UPDATE EVENT FORM
 		// cal.hfTxt.value = isEdit ? cal.mthEvents[cal.sDay].data : "";
@@ -308,7 +284,7 @@ remove.onclick = ()=>{
 
 	// GET ALL EVENTS FROM A DAY
 	getEvents: (day) => {
-		var events = cal.mthEvents.filter((event)=>{
+		var events = cal.mthEvents.filter((event) => {
 			return event.day === day;
 		});
 		return events;
@@ -340,7 +316,6 @@ remove.onclick = ()=>{
 	del: (id) => {
 		// send new updates
 		var info = window.webxdc.selfName + " deleted an event";
-		console.log(id);
 		window.webxdc.sendUpdate(
 			{
 				payload: {

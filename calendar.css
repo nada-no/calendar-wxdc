@@ -26,7 +26,7 @@
 #cal-yr {
   box-sizing: border-box;
   padding: 10px 20px;
-  font-size: 1.2em;
+  font-size: 1.5em;
   border: 0;
 }
 
@@ -44,6 +44,11 @@
   padding: 15px;
   text-align: center;
   height: 25px;
+}
+
+.day{
+  overflow: hidden;
+
 }
 
 .day:hover {
@@ -84,6 +89,19 @@
   padding: 10px;
 }
 
+.evt-view{
+  text-align: left;
+}
+
+.evt-view:hover{
+  background-color: #ca4a4a;
+}
+
+.evt-view span{
+  float: right;
+  cursor: pointer;
+}
+
 /* (E) ADD/EDIT EVENT */
 #cal-event {
   position: absolute;
@@ -108,19 +126,22 @@
   margin: 10px 0;
 }
 
-#cal-event textarea {
+textarea {
   display: block;
+  margin-right: auto;
+  margin-left: auto;
   box-sizing: border-box;
-  width: 100%;
+  width: 90vw;
   padding: 10px;
-  margin: 10px 0;
   border: 1px solid #ddd;
-  min-height: 100px;
+  border-radius: 10px;
 }
 
 .eventBtn {
+  cursor: pointer;
+  width: 42.5vw;
   padding: 10px;
-  margin: 5px;
+  margin: 2.5vw;
   font-size: 1.2em;
   border: 0;
   background: #ea4c4c;
