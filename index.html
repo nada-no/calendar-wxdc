@@ -12,8 +12,7 @@
 			<!-- (A) PERIOD SELECTOR -->
 			<div id="cal-date">
 				<button id="prevMonth">&#10094;</button>
-				<select id="cal-mth"></select>
-				<select id="cal-yr"></select>
+				<h1 id="date"></h1>
 				<button id="nxtMonth">&#10095;</button>
 			</div>
 
@@ -26,11 +25,18 @@
 				<div id="evt-cards"></div>
 				<p id="alert">⚠️ You cannot submit an empty event!</p>
 				<textarea id="evt-details" placeholder="Add a new event..."></textarea>
-				<button class="eventBtn" id="evt-save" >Save</button>
-				<button class="eventBtn" id="evt-close" >Close</button>
+				<button class="eventBtn" id="evt-save">Save</button>
+				<button class="eventBtn" id="evt-close">Close</button>
 			</div>
 
-			
+			<div id="dateSel">
+				<div>
+					<select id="cal-mth"></select>
+					<select id="cal-yr"></select>
+				</div>
+				<button class="eventBtn" id="okDate">OK</button>
+				<button class="eventBtn" id="cancelDate">Cancel</button>
+			</div>
 		</div>
 	</body>
 </html>

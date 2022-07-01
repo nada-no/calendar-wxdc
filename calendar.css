@@ -69,10 +69,11 @@
 
 .dd {
   display: block;
-  width: 100%;
+  width: 85%;
   text-align: right;
   font-size: 1.2em;
   color: #90ADC6;
+  padding-right: 15%;
 }
 
 .evt {
@@ -95,7 +96,7 @@
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: bold;
-  background:  #333652;
+  background: #333652;
   color: white;
   border-radius: 10px;
   padding: 10px;
@@ -115,17 +116,8 @@
   cursor: pointer;
 }
 
-/* (E) ADD/EDIT EVENT */
-#cal-event {
-  position: absolute;
-  top: 20vh;
-  left: 25vw;
-  width: 600px;
-  height: 300px;
-  padding: 15px;
-  margin-top: 20px;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
+#date {
+  cursor: pointer;
 }
 
 #alert {
@@ -174,7 +166,6 @@ textarea {
   height: 90px;
   border-radius: 10px;
   padding-top: 5px;
-  padding-right: 15px;
 }
 
 button {
@@ -183,7 +174,8 @@ button {
   cursor: pointer;
 }
 
-#eventsDay {
+#eventsDay,
+#dateSel {
   position: absolute;
   top: 0;
   left: 0;
@@ -192,6 +184,25 @@ button {
   height: 100%;
   text-align: center;
   overflow: scroll;
+}
+
+#dateSel div {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+select {
+  width: auto;
+  margin: 0;
+  padding: .75em 1.5em;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background-color: white;
+  /* Styling the select text color */
+  color: darken(#1FBDED, 35%);
 }
 
 
@@ -205,7 +216,11 @@ button {
 
   #cal-container>div {
     font-size: 14px;
-    padding: 2px;
+    /* padding: 2px; */
+  }
+
+  .dd {
+    margin-right: 7px;
   }
 
   #cal-container>.head {

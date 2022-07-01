@@ -36,6 +36,10 @@ var cal = {
 	eventsView: null,
 	evCards: null,
 	alert: null,
+	date: null,
+	dateSel: null,
+	okDate: null,
+	cancelDate: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -57,6 +61,15 @@ var cal = {
 		cal.evCards = document.getElementById("evt-cards");
 		cal.alert = document.getElementById("alert");
 		cal.alert.classList.add("ninja");
+		cal.date = document.getElementById("date");
+		cal.date.onclick = cal.showDateSel;
+		cal.dateSel = document.getElementById("dateSel");
+		cal.dateSel.classList.add("ninja");
+		cal.okDate = document.getElementById("okDate");
+		cal.okDate.onclick = cal.okDateSel;
+		cal.cancelDate = document.getElementById("cancelDate");
+		cal.cancelDate.onclick = cal.closeDateSel;
+
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
@@ -88,7 +101,7 @@ var cal = {
 			}
 			cal.hMth.appendChild(opt);
 		}
-		cal.hMth.onchange = cal.list;
+		// cal.hMth.onchange = cal.list;
 
 		// (B4) APPEND YEARS SELECTOR
 		// Set to 10 years range. Change this as you like.
@@ -101,7 +114,7 @@ var cal = {
 			}
 			cal.hYear.appendChild(opt);
 		}
-		cal.hYear.onchange = cal.list;
+		// cal.hYear.onchange = cal.list;
 
 		// (B5) START - DRAW CALENDAR
 		cal.list();
@@ -207,6 +220,10 @@ var cal = {
 		}
 		container.appendChild(week);
 		week.classList.add("head");
+
+		// Today's date
+
+		cal.date.innerHTML = cal.mName[cal.sMth] + " " + cal.sYear;
 
 
 		// Days in Month
@@ -331,6 +348,19 @@ var cal = {
 			},
 			info
 		);
+	},
+
+	showDateSel: () => {
+		cal.dateSel.classList.remove("ninja");
+	},
+
+	okDateSel: () => {
+		cal.list();
+		cal.closeDateSel();
+	},
+
+	closeDateSel: () => {
+		cal.dateSel.classList.add("ninja");
 	},
 };
 window.addEventListener("load", cal.init);
