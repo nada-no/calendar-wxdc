@@ -199,12 +199,15 @@ var cal = {
 		if (cal.sMon) {
 			days.push(days.shift());
 		}
+		let week = document.createElement("div");
 		for (let d of days) {
 			let cCell = document.createElement("div");
 			cCell.innerHTML = d;
-			container.appendChild(cCell);
-			cCell.classList.add("head");
+			week.appendChild(cCell);
 		}
+		container.appendChild(week);
+		week.classList.add("head");
+
 
 		// Days in Month
 		let total = squares.length;
