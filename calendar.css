@@ -22,7 +22,6 @@
 #cal-date {
   display: flex;
   justify-content: space-between;
-  height: 10vh;
   color: #333652;
 }
 
@@ -47,8 +46,6 @@ select {
   border: none;
   border-radius: 10px;
   background-color: white;
-  /* Styling the select text color */
-  color: darken(#1FBDED, 35%);
 }
 
 #cal-mth,
@@ -64,9 +61,9 @@ select {
 }
 
 /* (D) CALENDAR */
-
 #cal-container>.head {
-  display: inline-block;
+  display: flex;
+  justify-content: space-around;
   font-weight: bold;
   text-transform: uppercase;
   color: #fff;
@@ -75,8 +72,6 @@ select {
   text-align: center;
   grid-column: 1/-1;
   grid-row: 1/1;
-  display: grid;
-  grid-template-columns: subgrid;
   height: 25px;
   border-radius: 10px 10px 0px 0px;
 }
@@ -221,7 +216,6 @@ button {
   }
 
   #cal-container>.head {
-
     padding: 5px;
     gap: 3px 3px;
   }
