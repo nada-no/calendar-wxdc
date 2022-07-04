@@ -3,16 +3,19 @@
   font-family: helvetica, arial, sans-serif;
 }
 
+.block {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .ninja {
   display: none !important;
 }
 
-/* (B) CONTAINER */
+/* CALENDAR CONTAINER */
 #cal-wrap {
   max-width: 900px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* (C) PERIOD SELECTOR */
@@ -23,6 +26,31 @@
   color: #333652;
 }
 
+#eventsDay,
+#dateSel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #90ADC6;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  overflow: scroll;
+}
+
+select {
+  width: auto;
+  margin: 0;
+  padding: .75em 1.5em;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background-color: white;
+  /* Styling the select text color */
+  color: darken(#1FBDED, 35%);
+}
+
 #cal-mth,
 #cal-yr {
   box-sizing: border-box;
@@ -31,11 +59,11 @@
   border: 0;
 }
 
-/* (D) CALENDAR */
-#calendar {
-  width: 100%;
-  border-collapse: collapse;
+#date {
+  cursor: pointer;
 }
+
+/* (D) CALENDAR */
 
 #cal-container>.head {
   display: inline-block;
@@ -51,6 +79,19 @@
   grid-template-columns: subgrid;
   height: 25px;
   border-radius: 10px 10px 0px 0px;
+}
+
+#cal-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px 5px;
+  height: 80vh;
+}
+
+#cal-container>div {
+  height: 90px;
+  border-radius: 10px;
+  padding-top: 5px;
 }
 
 .day {
@@ -87,16 +128,14 @@
   padding-left: 5px;
 }
 
+/* EVENT PAGE  */
 .evt-view {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
   width: 90vw;
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 20px;
   font-weight: bold;
-  background: #333652;
+  background: #FAD02C;
   color: white;
   border-radius: 10px;
   padding: 10px;
@@ -116,25 +155,27 @@
   cursor: pointer;
 }
 
-#date {
-  cursor: pointer;
+.block>label {
+  color: #333652;
+  margin-top: 2.5vw;
+}
+
+.block>input {
+  margin-top: 2.5vw;
 }
 
 #alert {
   color: #c74646;
-
+  margin-top: 2.5vw;
 }
 
-#evt-date {
+#evt-date, #dateSel div {
   color: #333652;
   margin-top: 2.5vh;
   margin-bottom: 5vh;
 }
 
 textarea {
-  display: block;
-  margin-right: auto;
-  margin-left: auto;
   margin-top: 2.5vw;
   box-sizing: border-box;
   width: 90vw;
@@ -155,56 +196,12 @@ textarea {
   border-radius: 10px;
 }
 
-#cal-container {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px 5px;
-  height: 80vh;
-}
-
-#cal-container>div {
-  height: 90px;
-  border-radius: 10px;
-  padding-top: 5px;
-}
-
 button {
   background: none;
   border: none;
   cursor: pointer;
+  color: #333652;
 }
-
-#eventsDay,
-#dateSel {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #90ADC6;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  overflow: scroll;
-}
-
-#dateSel div {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-select {
-  width: auto;
-  margin: 0;
-  padding: .75em 1.5em;
-  outline: none;
-  cursor: pointer;
-  border: none;
-  border-radius: 10px;
-  background-color: white;
-  /* Styling the select text color */
-  color: darken(#1FBDED, 35%);
-}
-
 
 /* MOBILE SCREENS */
 @media screen and (max-width: 768px) {

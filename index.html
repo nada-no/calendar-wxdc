@@ -8,7 +8,7 @@
 		<script async src="calendar.js"></script>
 	</head>
 	<body>
-		<div id="cal-wrap">
+		<div id="cal-wrap" class="block">
 			<!-- (A) PERIOD SELECTOR -->
 			<div id="cal-date">
 				<button id="prevMonth">&#10094;</button>
@@ -21,16 +21,26 @@
 
 			<!-- (D) EVENTS PER DAY -->
 			<div id="eventsDay">
-				<h1 id="evt-date"></h1>
+				<h1 id="evt-date" class="block"></h1>
 				<div id="evt-cards"></div>
 				<p id="alert">⚠️ You cannot submit an empty event!</p>
-				<textarea id="evt-details" placeholder="Add a new event..."></textarea>
+				<textarea id="evt-details" class="block" placeholder="Add a new event..."></textarea>
+				<!-- <select id="evtColor">
+					<option value="#FAD02C" selected>Yellow</option>
+					<option value="#333652">Blue</option>
+					<option value="#c74646">Red</option>
+					<option value="#00cc00">Green</option>
+				</select> -->
+				<div class="block">
+				<label for="color">Choose a color for your event:</label>
+				<input type="color" value="#FAD02C" id="evtColor" name="color">
+			</div>
 				<button class="eventBtn" id="evt-save">Save</button>
 				<button class="eventBtn" id="evt-close">Close</button>
 			</div>
 
 			<div id="dateSel">
-				<div>
+				<div class="block">
 					<select id="cal-mth"></select>
 					<select id="cal-yr"></select>
 				</div>

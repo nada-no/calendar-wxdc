@@ -40,6 +40,7 @@ var cal = {
 	dateSel: null,
 	okDate: null,
 	cancelDate: null,
+	color: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -69,6 +70,7 @@ var cal = {
 		cal.okDate.onclick = cal.okDateSel;
 		cal.cancelDate = document.getElementById("cancelDate");
 		cal.cancelDate.onclick = cal.closeDateSel;
+		cal.color = document.getElementById("evtColor");
 
 
 		// handle past and future state updates
@@ -245,8 +247,13 @@ var cal = {
 				var eventsDay = cal.getEvents(day);
 				if (eventsDay.length !== 0) {
 					for (let j = 0; j < eventsDay.length; j++) {
-						cCell.innerHTML +=
-							"<div class='evt'>" + eventsDay[j].data + "</div>";
+						var evt = document.createElement("div");
+						evt.classList.add("evt");
+						evt.textContent = eventsDay[j].data;
+						evt.style.backgroundColor = eventsDay[j].color;
+						cCell.appendChild(evt);
+						// cCell.innerHTML +=
+						// 	"<div class='evt'>" + eventsDay[j].data + "</div>";
 					}
 				}
 				cCell.onclick = () => {
@@ -278,8 +285,10 @@ var cal = {
 				cal.del(ev.target.getAttribute("data-id"));
 			};
 			eventBox.textContent = dayEvents[i].data;
+			eventBox.style.backgroundColor = dayEvents[i].color;
 			eventBox.appendChild(remove);
 			eventBox.classList.add("evt-view");
+			eventBox.classList.add("block");
 
 			cal.evCards.appendChild(eventBox);
 		}
@@ -316,6 +325,7 @@ var cal = {
 						month: cal.sMth,
 						year: cal.sYear,
 						data: cal.hfTxt.value,
+						color: cal.color.value,
 						addition: true,
 						creator: window.webxdc.selfName,
 					},
