@@ -279,17 +279,25 @@ var cal = {
 		for (const i in dayEvents) {
 			var eventBox = document.createElement("div");
 			var remove = document.createElement("span");
+			var data = document.createElement("p");
+			var author = document.createElement("p");
+			var lilHeader = document.createElement("div");
 			remove.innerHTML = "&#x2715";
 			remove.setAttribute("data-id", dayEvents[i].id);
 			remove.onclick = (ev) => {
 				cal.del(ev.target.getAttribute("data-id"));
 			};
-			eventBox.textContent = dayEvents[i].data;
+			author.textContent = dayEvents[i].creator;
+			author.classList.add("evt-view-name");
+			lilHeader.appendChild(author);
+			lilHeader.appendChild(remove);
+			eventBox.appendChild(lilHeader);
+			data.textContent = dayEvents[i].data;
+			data.classList.add("evt-data");
 			eventBox.style.backgroundColor = dayEvents[i].color;
-			eventBox.appendChild(remove);
+			eventBox.appendChild(data);
 			eventBox.classList.add("evt-view");
 			eventBox.classList.add("block");
-
 			cal.evCards.appendChild(eventBox);
 		}
 
@@ -316,7 +324,7 @@ var cal = {
 	save: () => {
 		if (cal.hfTxt.value !== "") {
 			// send new updates
-			var info = window.webxdc.selfName + " created an event";
+			var info = window.webxdc.selfName + " created the event " + cal.hfTxt.value + " on " + cal.sDay + "-" + cal.sMth;
 			window.webxdc.sendUpdate(
 				{
 					payload: {

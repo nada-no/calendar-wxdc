@@ -137,8 +137,20 @@ select {
   box-sizing: border-box;
 }
 
-.evt-view {
+.evt-view-name{
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  width: 60%;
+  float: left;
   text-align: left;
+}
+
+.evt-data {
+  width: 100%;
+  text-align: left;
+  overflow: hidden;
+  margin-top: 5px;
 }
 
 .evt-view:hover {
