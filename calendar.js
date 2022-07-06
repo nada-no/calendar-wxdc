@@ -79,10 +79,8 @@ var cal = {
 				cal.events.push(update.payload);
 			} else {
 				var index = cal.events.findIndex((obj) => {
-					console.log(obj.id + " != " + update.payload.id);
 					return Number.parseInt(obj.id) === Number.parseInt(update.payload.id);
 				});
-				console.log(index);
 				cal.events.splice(index, 1);
 			}
 			cal.list();
@@ -103,7 +101,6 @@ var cal = {
 			}
 			cal.hMth.appendChild(opt);
 		}
-		// cal.hMth.onchange = cal.list;
 
 		// (B4) APPEND YEARS SELECTOR
 		// Set to 10 years range. Change this as you like.
@@ -116,7 +113,6 @@ var cal = {
 			}
 			cal.hYear.appendChild(opt);
 		}
-		// cal.hYear.onchange = cal.list;
 
 		// (B5) START - DRAW CALENDAR
 		cal.list();
@@ -324,7 +320,7 @@ var cal = {
 	save: () => {
 		if (cal.hfTxt.value !== "") {
 			// send new updates
-			var info = window.webxdc.selfName + " created the event " + cal.hfTxt.value + " on " + cal.sDay + "-" + cal.sMth;
+			var info = window.webxdc.selfName + " created the event " + cal.hfTxt.value + " on " +  cal.mName[cal.sMth] + " " + cal.sDay;
 			window.webxdc.sendUpdate(
 				{
 					payload: {
@@ -350,7 +346,7 @@ var cal = {
 	// (G) DELETE EVENT FOR SELECTED DATE
 	del: (id) => {
 		// send new updates
-		var info = window.webxdc.selfName + " deleted an event";
+		var info = window.webxdc.selfName + " deleted an event from " + cal.mName[cal.sMth] + " " + cal.sDay;
 		window.webxdc.sendUpdate(
 			{
 				payload: {

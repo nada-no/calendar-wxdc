@@ -150,7 +150,7 @@ select {
   width: 100%;
   text-align: left;
   overflow: hidden;
-  margin-top: 5px;
+  margin-top: 25px;
 }
 
 .evt-view:hover {
@@ -158,6 +158,8 @@ select {
 }
 
 .evt-view span {
+  margin-top: -3px;
+  font-size: 18px;
   float: right;
   cursor: pointer;
 }
