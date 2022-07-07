@@ -21,6 +21,8 @@
 
 			<!-- (D) EVENTS PER DAY -->
 			<div id="eventsDay">
+				<button id="prevDay">&#10094;</button>
+				<button id="nxtDay">&#10095;</button>
 				<h1 id="evt-date" class="block"></h1>
 				<div id="evt-cards"></div>
 				<p id="alert">⚠️ You cannot submit an empty event!</p>
@@ -35,7 +37,7 @@
 				<label for="color">Choose a color for your event:</label>
 				<input type="color" value="#FAD02C" id="evtColor" name="color">
 			</div>
-				<button class="eventBtn" id="evt-save">Save</button>
+				<button class="eventBtn" id="evt-save">Add event</button>
 				<button class="eventBtn" id="evt-close">Close</button>
 			</div>
 
@@ -44,7 +46,7 @@
 					<select id="cal-mth"></select>
 					<select id="cal-yr"></select>
 				</div>
-				<button class="eventBtn" id="okDate">OK</button>
+				<button class="eventBtn" id="okDate">Go</button>
 				<button class="eventBtn" id="cancelDate">Cancel</button>
 			</div>
 		</div>

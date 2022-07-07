@@ -18,7 +18,7 @@ var cal = {
 	], // Month Names
 
 	// (A2) CALENDAR DATA
-	mthEvents: {}, // Events for the selected period
+	// mthEvents: {}, // Events for the selected period
 	sDay: 0,
 	sMth: 0,
 	sYear: 0, // Current selected day, month, year
@@ -26,10 +26,13 @@ var cal = {
 	// (A3) COMMON HTML ELEMENTS
 	nxt: null,
 	prev: null,
+	nxtDay: null,
+	prevDay: null,
 	hMth: null,
 	hYear: null, // month/year selector
 	hForm: null,
 	hfDate: null,
+	container: null,
 	hfTxt: null, //event form
 	hfSave: null,
 	events: null,
@@ -41,10 +44,18 @@ var cal = {
 	okDate: null,
 	cancelDate: null,
 	color: null,
+	days: null,
+	touchstartX: 0,
+	touchendX: 0,
 
 	// (B) INIT CALENDAR
 	init: () => {
 		// (B1) GET + SET COMMON HTML ELEMENTS
+		cal.container = document.getElementById("cal-container");
+		cal.nxtDay = document.getElementById("nxtDay");
+		cal.nxtDay.onclick = cal.nextDay;
+		cal.prevDay = document.getElementById("prevDay");
+		cal.prevDay.onclick = cal.previousDay;
 		cal.nxt = document.getElementById("nxtMonth");
 		cal.nxt.onclick = cal.next;
 		cal.prev = document.getElementById("prevMonth");
@@ -71,7 +82,50 @@ var cal = {
 		cal.cancelDate = document.getElementById("cancelDate");
 		cal.cancelDate.onclick = cal.closeDateSel;
 		cal.color = document.getElementById("evtColor");
+		cal.days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 
+		// swipe listeners for mobile
+		cal.container.addEventListener(
+			"touchstart",
+			function (event) {
+				cal.touchstartX = event.changedTouches[0].screenX;
+			},
+			false
+		);
+
+		cal.container.addEventListener(
+			"touchend",
+			function (event) {
+				cal.touchendX = event.changedTouches[0].screenX;
+				if (cal.touchendX < cal.touchstartX - 100) {
+					cal.next();
+				} else if (cal.touchendX > cal.touchstartX + 100) {
+					cal.previous();
+				}
+			},
+			false
+		);
+
+		cal.eventsView.addEventListener(
+			"touchstart",
+			function (event) {
+				cal.touchstartX = event.changedTouches[0].screenX;
+			},
+			false
+		);
+
+		cal.eventsView.addEventListener(
+			"touchend",
+			function (event) {
+				cal.touchendX = event.changedTouches[0].screenX;
+				if (cal.touchendX < cal.touchstartX - 100) {
+					cal.nextDay();
+				} else if (cal.touchendX > cal.touchstartX + 100) {
+					cal.previousDay();
+				}
+			},
+			false
+		);
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
@@ -104,7 +158,7 @@ var cal = {
 
 		// (B4) APPEND YEARS SELECTOR
 		// Set to 10 years range. Change this as you like.
-		for (let i = nowYear - 10; i <= nowYear + 10; i++) {
+		for (let i = nowYear - 30; i <= nowYear + 30; i++) {
 			let opt = document.createElement("option");
 			opt.value = i;
 			opt.innerHTML = i;
@@ -116,6 +170,46 @@ var cal = {
 
 		// (B5) START - DRAW CALENDAR
 		cal.list();
+	},
+
+	//PREVIOUS DAY
+	previousDay: () => {
+		let daysInMonth = () => {
+			return new Date(cal.sYear, cal.sMth + 1, 0).getDate();
+		};
+		if (cal.sDay - 1 > 0) {
+			cal.show(cal.sYear, cal.sMth, cal.sDay - 1);
+		} else {
+			if (cal.sMth - 1 >= 0) {
+				cal.sMth--;
+				cal.show(cal.sYear, cal.sMth, daysInMonth());
+			} else {
+				cal.sMth = 11;
+				cal.sYear--;
+				cal.show(cal.sYear, cal.sMth, daysInMonth());
+			}
+		}
+		console.log(cal.sYear + "-" +cal.sMth + "-" + cal.sDay);
+	},
+
+	//NEXT DAY
+	nextDay: () => {
+		let daysInMonth = () => {
+			return new Date(cal.sYear, cal.sMth + 1, 0).getDate();
+		};
+		if (cal.sDay + 1 <= daysInMonth()) {
+			cal.show(cal.sYear, cal.sMth, cal.sDay + 1);
+		} else {
+			if (cal.sMth + 1 > 11) {
+				cal.sMth = 0;
+				cal.sYear++;
+				cal.show(cal.sYear, cal.sMth, 1);
+			} else {
+				cal.sMth++;
+				cal.show(cal.sYear, cal.sMth, 1);
+			}
+		}
+		console.log(cal.sMth + "-" + cal.sDay);
 	},
 
 	//PREVIOUS MONTH
@@ -157,14 +251,12 @@ var cal = {
 				cal.sMth == nowMth && cal.sYear == nowYear ? now.getDate() : null;
 
 		// (C2) LOAD DATA FROM LOCALSTORAGE
-		cal.mthEvents = [];
+		// cal.mthEvents = [];
 
-		//remove deleted events
-
-		//get this month events from the updates
-		cal.mthEvents = cal.events.filter((event) => {
-			return event.month == cal.sMth && event.year == cal.sYear;
-		});
+		// //get this month events from the updates
+		// cal.mthEvents = cal.events.filter((event) => {
+		// 	return event.month == cal.sMth && event.year == cal.sYear;
+		// });
 
 		// (C3) DRAWING CALCULATIONS
 		// Blank squares before start of month
@@ -201,28 +293,22 @@ var cal = {
 		}
 
 		// (C4) DRAW HTML CALENDAR
-		// Get container
-		let container = document.getElementById("cal-container");
-		container.innerHTML = "";
+		// Get container reset
+		cal.container.innerHTML = "";
 
 		// First row - Day names
-		days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-		if (cal.sMon) {
-			days.push(days.shift());
-		}
 		let week = document.createElement("div");
+		let days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
 		for (let d of days) {
 			let cCell = document.createElement("div");
 			cCell.innerHTML = d;
 			week.appendChild(cCell);
 		}
-		container.appendChild(week);
+		cal.container.appendChild(week);
 		week.classList.add("head");
 
 		// Today's date
-
 		cal.date.innerHTML = cal.mName[cal.sMth] + " " + cal.sYear;
-
 
 		// Days in Month
 		let total = squares.length;
@@ -240,7 +326,7 @@ var cal = {
 				cCell.innerHTML = `<div class="dd">${day}</div>`;
 
 				//retrieve events for this day
-				var eventsDay = cal.getEvents(day);
+				var eventsDay = cal.getEvents(cal.sYear, cal.sMth, day);
 				if (eventsDay.length !== 0) {
 					for (let j = 0; j < eventsDay.length; j++) {
 						var evt = document.createElement("div");
@@ -248,26 +334,29 @@ var cal = {
 						evt.textContent = eventsDay[j].data;
 						evt.style.backgroundColor = eventsDay[j].color;
 						cCell.appendChild(evt);
-						// cCell.innerHTML +=
-						// 	"<div class='evt'>" + eventsDay[j].data + "</div>";
 					}
 				}
 				cCell.onclick = () => {
-					cal.show(cCell);
+					cal.getDayToShow(cCell);
 				};
 			}
-			container.appendChild(cCell);
+			cal.container.appendChild(cCell);
 		}
 
 		// (C5) REMOVE ANY PREVIOUS ADD/EDIT EVENT DOCKET
-		cal.close();
+		// cal.close();
 	},
 
 	// (D) SHOW EDIT EVENT DOCKET FOR SELECTED DAY
-	show: (el) => {
+	getDayToShow: (el) => {
+		let day = Number.parseInt(el.getElementsByClassName("dd")[0].innerHTML);
+		cal.show(cal.sYear, cal.sMth, day);
+	},
+
+	show: (year, month, day) => {
 		// (D1) FETCH EXISTING DATA
-		cal.sDay = Number.parseInt(el.getElementsByClassName("dd")[0].innerHTML);
-		let dayEvents = cal.getEvents(cal.sDay);
+		cal.sDay = day;
+		let dayEvents = cal.getEvents(year, month, day);
 
 		//ADD EVENT BOXES
 		cal.hfTxt.value = "";
@@ -297,21 +386,27 @@ var cal = {
 			cal.evCards.appendChild(eventBox);
 		}
 
+		cal.container.classList.add("ninja");
 		cal.eventsView.classList.remove("ninja");
 
 		// // (D2) UPDATE EVENT FORM
-		cal.hfDate.innerHTML = `${cal.sDay} ${cal.mName[cal.sMth]} ${cal.sYear}`;
+		let fullDate = new Date(year, month, day);
+		cal.hfDate.innerHTML = `${cal.days[fullDate.getDay()]} ${day} ${
+			cal.mName[month]
+		} ${year}`;
 	},
 
 	// (E) CLOSE EVENT DOCKET
 	close: () => {
 		cal.eventsView.classList.add("ninja");
+		cal.container.classList.remove("ninja");
+		// cal.list();
 	},
 
 	// GET ALL EVENTS FROM A DAY
-	getEvents: (day) => {
-		var events = cal.mthEvents.filter((event) => {
-			return event.day === day;
+	getEvents: (year, month, day) => {
+		var events = cal.events.filter((event) => {
+			return event.day == day && event.year == year && event.month == month;
 		});
 		return events;
 	},
@@ -320,7 +415,14 @@ var cal = {
 	save: () => {
 		if (cal.hfTxt.value !== "") {
 			// send new updates
-			var info = window.webxdc.selfName + " created the event " + cal.hfTxt.value + " on " +  cal.mName[cal.sMth] + " " + cal.sDay;
+			var info =
+				window.webxdc.selfName +
+				" created the event " +
+				cal.hfTxt.value +
+				" on " +
+				cal.mName[cal.sMth] +
+				" " +
+				cal.sDay;
 			window.webxdc.sendUpdate(
 				{
 					payload: {
@@ -337,6 +439,7 @@ var cal = {
 				},
 				info
 			);
+			cal.close();
 			return false;
 		} else {
 			cal.alert.classList.remove("ninja");
@@ -346,7 +449,12 @@ var cal = {
 	// (G) DELETE EVENT FOR SELECTED DATE
 	del: (id) => {
 		// send new updates
-		var info = window.webxdc.selfName + " deleted an event from " + cal.mName[cal.sMth] + " " + cal.sDay;
+		var info =
+			window.webxdc.selfName +
+			" deleted an event from " +
+			cal.mName[cal.sMth] +
+			" " +
+			cal.sDay;
 		window.webxdc.sendUpdate(
 			{
 				payload: {
@@ -362,9 +470,11 @@ var cal = {
 			},
 			info
 		);
+		document.querySelector('[data-id="'+id+'"]').parentElement.parentElement.remove();
 	},
 
 	showDateSel: () => {
+		cal.container.classList.add("ninja");
 		cal.dateSel.classList.remove("ninja");
 	},
 
@@ -374,6 +484,7 @@ var cal = {
 	},
 
 	closeDateSel: () => {
+		cal.container.classList.remove("ninja");
 		cal.dateSel.classList.add("ninja");
 	},
 };
