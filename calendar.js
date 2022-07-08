@@ -83,7 +83,7 @@ var cal = {
 		cal.cancelDate = document.getElementById("cancelDate");
 		cal.cancelDate.onclick = cal.closeDateSel;
 		cal.color = "#FAD02C";
-		cal.days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+		cal.days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 		// swipe listeners for mobile
 		cal.container.addEventListener(
@@ -299,7 +299,7 @@ var cal = {
 
 		// First row - Day names
 		let week = document.createElement("div");
-		let days = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
+		let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 		for (let d of days) {
 			let cCell = document.createElement("div");
 			cCell.innerHTML = d;
