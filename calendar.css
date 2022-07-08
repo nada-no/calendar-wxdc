@@ -13,18 +13,22 @@
   display: none !important;
 }
 
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  color: #333652;
+}
+
+#eventsDay .flex-between {
+  width: 90vw;
+}
+
 /* CALENDAR CONTAINER */
 #cal-wrap {
   max-width: 900px;
 }
 
 /* (C) PERIOD SELECTOR */
-#cal-date {
-  display: flex;
-  justify-content: space-between;
-  color: #333652;
-}
-
 #eventsDay,
 #dateSel {
   position: absolute;
@@ -188,6 +192,7 @@ select {
 
 textarea {
   margin-top: 2.5vw;
+  margin-bottom: 2.5vw;
   box-sizing: border-box;
   width: 90vw;
   padding: 10px;
@@ -212,6 +217,23 @@ button {
   border: none;
   cursor: pointer;
   color: #333652;
+}
+
+.unclickable {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.colorBtns {
+  border-radius: 10px;
+  padding: 10px;
+  color: white;
+  margin: 10px;
+  font-size: 1.2em;
+}
+
+#yellow {
+  background-color: #FAD02C;
 }
 
 /* MOBILE SCREENS */

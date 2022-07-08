@@ -65,6 +65,7 @@ var cal = {
 		cal.hfDate = document.getElementById("evt-date");
 		cal.hfTxt = document.getElementById("evt-details");
 		cal.hfSave = document.getElementById("evt-save");
+		cal.hfSave.classList.add("unclickable");
 		document.getElementById("evt-close").onclick = cal.close;
 		cal.hfSave.onclick = cal.save;
 		cal.events = [];
@@ -81,7 +82,7 @@ var cal = {
 		cal.okDate.onclick = cal.okDateSel;
 		cal.cancelDate = document.getElementById("cancelDate");
 		cal.cancelDate.onclick = cal.closeDateSel;
-		cal.color = document.getElementById("evtColor");
+		cal.color = "#FAD02C";
 		cal.days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 
 		// swipe listeners for mobile
@@ -189,7 +190,7 @@ var cal = {
 				cal.show(cal.sYear, cal.sMth, daysInMonth());
 			}
 		}
-		console.log(cal.sYear + "-" +cal.sMth + "-" + cal.sDay);
+		console.log(cal.sYear + "-" + cal.sMth + "-" + cal.sDay);
 	},
 
 	//NEXT DAY
@@ -360,6 +361,15 @@ var cal = {
 
 		//ADD EVENT BOXES
 		cal.hfTxt.value = "";
+		cal.hfSave.classList.add("unclickable");
+		cal.hfTxt.addEventListener("input", () => {
+			if (cal.hfTxt.value.trim() != "") {
+				cal.hfSave.classList.remove("unclickable");
+			} else {
+				cal.hfSave.classList.add("unclickable");
+			}
+		});
+
 		cal.evCards.innerHTML = "";
 		for (const i in dayEvents) {
 			var eventBox = document.createElement("div");
@@ -384,6 +394,32 @@ var cal = {
 			eventBox.classList.add("evt-view");
 			eventBox.classList.add("block");
 			cal.evCards.appendChild(eventBox);
+		}
+
+		//color buttons
+		var yellow = document.getElementById("yellow"),
+			red = document.getElementById("red"),
+			blue = document.getElementById("blue"),
+			green = document.getElementById("green");
+
+		selectColor(yellow);
+
+		yellow.onclick = (ev) => selectColor(ev.target);
+		red.onclick = (ev) => selectColor(ev.target);
+		blue.onclick = (ev) => selectColor(ev.target);
+		green.onclick = (ev) => selectColor(ev.target);
+
+		function selectColor(el) {
+			cal.color = el.getAttribute("data-color");
+			var buttons = document.getElementsByClassName("colorBtns");
+			console.log(buttons);
+			for (let i = 0; i < buttons.length; i++) {
+				if (buttons[i].getAttribute("data-color") == cal.color) {
+					buttons[i].style.backgroundColor = cal.color;
+				} else {
+					buttons[i].style.backgroundColor = "transparent";
+				}
+			}
 		}
 
 		cal.container.classList.add("ninja");
@@ -431,7 +467,7 @@ var cal = {
 						month: cal.sMth,
 						year: cal.sYear,
 						data: cal.hfTxt.value,
-						color: cal.color.value,
+						color: cal.color,
 						addition: true,
 						creator: window.webxdc.selfName,
 					},
@@ -470,7 +506,9 @@ var cal = {
 			},
 			info
 		);
-		document.querySelector('[data-id="'+id+'"]').parentElement.parentElement.remove();
+		document
+			.querySelector('[data-id="' + id + '"]')
+			.parentElement.parentElement.remove();
 	},
 
 	showDateSel: () => {

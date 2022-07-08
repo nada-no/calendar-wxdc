@@ -10,7 +10,7 @@
 	<body>
 		<div id="cal-wrap" class="block">
 			<!-- (A) PERIOD SELECTOR -->
-			<div id="cal-date">
+			<div id="cal-date" class="flex-between">
 				<button id="prevMonth">&#10094;</button>
 				<h1 id="date"></h1>
 				<button id="nxtMonth">&#10095;</button>
@@ -21,22 +21,24 @@
 
 			<!-- (D) EVENTS PER DAY -->
 			<div id="eventsDay">
-				<button id="prevDay">&#10094;</button>
-				<button id="nxtDay">&#10095;</button>
-				<h1 id="evt-date" class="block"></h1>
+				<div class="flex-between block">
+					<button id="prevDay">&#10094;</button>
+					<h1 id="evt-date" class="block"></h1>
+					<button id="nxtDay">&#10095;</button>
+				</div>
 				<div id="evt-cards"></div>
 				<p id="alert">⚠️ You cannot submit an empty event!</p>
-				<textarea id="evt-details" class="block" placeholder="Add a new event..."></textarea>
-				<!-- <select id="evtColor">
-					<option value="#FAD02C" selected>Yellow</option>
-					<option value="#333652">Blue</option>
-					<option value="#c74646">Red</option>
-					<option value="#00cc00">Green</option>
-				</select> -->
+				<textarea
+					id="evt-details"
+					class="block"
+					placeholder="Add a new event..."
+				></textarea>
 				<div class="block">
-				<label for="color">Choose a color for your event:</label>
-				<input type="color" value="#FAD02C" id="evtColor" name="color">
-			</div>
+					<button class="colorBtns" id="yellow" data-color="#FAD02C">Yellow</button>
+					<button class="colorBtns" id="red" data-color="#c74646">Red</button>
+					<button class="colorBtns" id="blue" data-color="#333652">Blue</button>
+					<button class="colorBtns" id="green" data-color="#00cc00">Green</button>
+				</div>
 				<button class="eventBtn" id="evt-save">Add event</button>
 				<button class="eventBtn" id="evt-close">Close</button>
 			</div>
