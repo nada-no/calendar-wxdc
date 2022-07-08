@@ -41,6 +41,7 @@
   overflow-y: auto;
   overflow-x:none;
   overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 select {
@@ -244,6 +245,8 @@ button {
     margin-right: 0;
     margin-left: 0;
   }
+
+
 
   #cal-container>div {
     font-size: 14px;
