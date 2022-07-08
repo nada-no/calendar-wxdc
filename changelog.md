@@ -27,5 +27,5 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Less colors to choose for the event card, just 4
 
-
+[2.0.0]: https://github.com/stoyechounadan/calendar-wxdc/compare/v1.0...v.2.0
 [1.0.0]: https://github.com/stoyechounadan/calendar-wxdc/compare/v1.0...v1.0
