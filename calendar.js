@@ -107,26 +107,26 @@ var cal = {
 			false
 		);
 
-		cal.eventsView.addEventListener(
-			"touchstart",
-			function (event) {
-				cal.touchstartX = event.changedTouches[0].screenX;
-			},
-			false
-		);
+		// cal.eventsView.addEventListener(
+		// 	"touchstart",
+		// 	function (event) {
+		// 		cal.touchstartX = event.changedTouches[0].screenX;
+		// 	},
+		// 	false
+		// );
 
-		cal.eventsView.addEventListener(
-			"touchend",
-			function (event) {
-				cal.touchendX = event.changedTouches[0].screenX;
-				if (cal.touchendX < cal.touchstartX - 100) {
-					cal.nextDay();
-				} else if (cal.touchendX > cal.touchstartX + 100) {
-					cal.previousDay();
-				}
-			},
-			false
-		);
+		// cal.eventsView.addEventListener(
+		// 	"touchend",
+		// 	function (event) {
+		// 		cal.touchendX = event.changedTouches[0].screenX;
+		// 		if (cal.touchendX < cal.touchstartX - 100) {
+		// 			cal.nextDay();
+		// 		} else if (cal.touchendX > cal.touchstartX + 100) {
+		// 			cal.previousDay();
+		// 		}
+		// 	},
+		// 	false
+		// );
 
 		// handle past and future state updates
 		window.webxdc.setUpdateListener(function (update) {
@@ -452,7 +452,7 @@ var cal = {
 			var info =
 				window.webxdc.selfName +
 				" created the event " +
-				cal.hfTxt.value +
+				cal.hfTxt.value.replace(/\n/g, ' ') +
 				" on " +
 				cal.mName[cal.sMth] +
 				" " +
