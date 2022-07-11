@@ -3,22 +3,28 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Simple Javascript Calendar</title>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+		/>
 		<script src="webxdc.js"></script>
 		<link href="calendar.css" rel="stylesheet" />
 		<script async src="calendar.js"></script>
+		<script src="inobounce.js"></script>
 	</head>
 	<body>
 		<div id="cal-wrap" class="block">
 			<!-- (A) PERIOD SELECTOR -->
-			<div id="cal-date" class="flex-between">
-				<button id="prevMonth">&#10094;</button>
-				<h1 id="date"></h1>
-				<button id="nxtMonth">&#10095;</button>
+			<div id="cal">
+				<div id="cal-date" class="flex-between">
+					<button id="prevMonth">&#10094;</button>
+					<h1 id="date"></h1>
+					<button id="nxtMonth">&#10095;</button>
+				</div>
+
+				<!-- (B) CALENDAR -->
+				<div id="cal-container"></div>
 			</div>
-
-			<!-- (B) CALENDAR -->
-			<div id="cal-container"></div>
-
 			<!-- (D) EVENTS PER DAY -->
 			<div id="eventsDay">
 				<div class="flex-between block">
@@ -27,17 +33,20 @@
 					<button id="nxtDay">&#10095;</button>
 				</div>
 				<div id="evt-cards"></div>
-				<p id="alert">⚠️ You cannot submit an empty event!</p>
 				<textarea
 					id="evt-details"
 					class="block"
 					placeholder="Add a new event..."
 				></textarea>
-				<div class="block">
-					<button class="colorBtns" id="yellow" data-color="#FAD02C">Yellow</button>
+				<div class="block" id="colorBtns">
+					<button class="colorBtns" id="yellow" data-color="#FAD02C">
+						Yellow
+					</button>
 					<button class="colorBtns" id="red" data-color="#c74646">Red</button>
 					<button class="colorBtns" id="blue" data-color="#333652">Blue</button>
-					<button class="colorBtns" id="green" data-color="#00cc00">Green</button>
+					<button class="colorBtns" id="green" data-color="#00cc00">
+						Green
+					</button>
 				</div>
 				<button class="eventBtn" id="evt-save">Add event</button>
 				<button class="eventBtn" id="evt-close">Close</button>

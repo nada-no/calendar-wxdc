@@ -38,7 +38,6 @@ var cal = {
 	events: null,
 	eventsView: null,
 	evCards: null,
-	alert: null,
 	date: null,
 	dateSel: null,
 	okDate: null,
@@ -47,6 +46,7 @@ var cal = {
 	days: null,
 	touchstartX: 0,
 	touchendX: 0,
+	calendar: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -72,8 +72,6 @@ var cal = {
 		cal.eventsView = document.getElementById("eventsDay");
 		cal.eventsView.classList.add("ninja");
 		cal.evCards = document.getElementById("evt-cards");
-		cal.alert = document.getElementById("alert");
-		cal.alert.classList.add("ninja");
 		cal.date = document.getElementById("date");
 		cal.date.onclick = cal.showDateSel;
 		cal.dateSel = document.getElementById("dateSel");
@@ -84,6 +82,8 @@ var cal = {
 		cal.cancelDate.onclick = cal.closeDateSel;
 		cal.color = "#FAD02C";
 		cal.days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+		cal.calendar = document.getElementById("cal");
+		cal.calendar.classList.add("ninja");
 
 		// swipe listeners for mobile
 		cal.container.addEventListener(
@@ -343,9 +343,7 @@ var cal = {
 			}
 			cal.container.appendChild(cCell);
 		}
-
-		// (C5) REMOVE ANY PREVIOUS ADD/EDIT EVENT DOCKET
-		// cal.close();
+		cal.calendar.classList.remove("ninja");
 	},
 
 	// (D) SHOW EDIT EVENT DOCKET FOR SELECTED DAY
@@ -477,8 +475,6 @@ var cal = {
 			);
 			cal.close();
 			return false;
-		} else {
-			cal.alert.classList.remove("ninja");
 		}
 	},
 

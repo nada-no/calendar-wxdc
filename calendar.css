@@ -38,8 +38,10 @@
   width: 100%;
   height: 100%;
   text-align: center;
-  overflow-y: auto;
-  overflow-x:none;
+  /* overflow-y: auto;
+  overflow-x:none; */
+  overflow: auto;
+  max-height: 100%;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
@@ -230,8 +232,15 @@ button {
   border-radius: 10px;
   padding: 10px;
   color: white;
-  margin: 10px;
-  font-size: 1.2em;
+}
+
+#colorBtns {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#colorBtns button {
+  font-size: 16px;
 }
 
 #yellow {
@@ -280,5 +289,20 @@ button {
     margin-top: 50px;
   }
 
+  #cal {
+    overflow: auto;
+    max-height: 100%;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+}
+
+@media screen and (max-width: 600px) {
+
+  #evt-date, .colorBtns {
+    font-size: 20px;
+  }
 
 }
