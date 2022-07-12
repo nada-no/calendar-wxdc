@@ -20,12 +20,21 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Width bug in events at month view
 - Upcoming updates won't take you to the month view anymore
-- Overscroll
 - More years available (+/-30 years back an forth now)
 - Bug with event deleting
 
 ### Changed
 - Less colors to choose for the event card, just 4
 
-[2.0.0]: https://github.com/stoyechounadan/calendar-wxdc/compare/v1.0...v.2.0
-[1.0.0]: https://github.com/stoyechounadan/calendar-wxdc/compare/v1.0...v1.0
+## [2.1.0] - 2022-07-12
+### Added
+- Week day at the day view
+- Swipe right/left to change the month/day on mobile
+- Add button not working if input is empty
+
+### Fixed
+- iOS overscroll and zoom issues
+- truncated line breaks in update messages
+
+### Changed
+- Removed swipe controls in day view due to problems with the form
