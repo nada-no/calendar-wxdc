@@ -1,3 +1,4 @@
+
 var cal = {
 	// (A) PROPERTIES
 	// (A1) COMMON CALENDAR
@@ -47,6 +48,7 @@ var cal = {
 	touchstartX: 0,
 	touchendX: 0,
 	calendar: null,
+	import: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -84,6 +86,10 @@ var cal = {
 		cal.days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 		cal.calendar = document.getElementById("cal");
 		cal.calendar.classList.add("ninja");
+		cal.import = document.getElementById("evt-import");
+		cal.import.onclick = () => {
+			getClipboard();
+		};
 
 		// swipe listeners for mobile
 		cal.container.addEventListener(
@@ -410,7 +416,6 @@ var cal = {
 		function selectColor(el) {
 			cal.color = el.getAttribute("data-color");
 			var buttons = document.getElementsByClassName("colorBtns");
-			console.log(buttons);
 			for (let i = 0; i < buttons.length; i++) {
 				if (buttons[i].getAttribute("data-color") == cal.color) {
 					buttons[i].style.backgroundColor = cal.color;
