@@ -549,7 +549,9 @@ var cal = {
 	},
 
 	closeImport: () => {
+		cal.importArea.value = "";
 		cal.importScreen.classList.add("ninja");
+		cal.close();
 	},
 };
 window.addEventListener("load", cal.init);

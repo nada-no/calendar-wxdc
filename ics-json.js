@@ -95,7 +95,8 @@ function parseIcsToJSON(icsData) {
 				if (value === EVENT) array.push(currentObj);
 				break;
 			case UID:
-                currentObj[keyMap[UID]] = clean(value);
+                // currentObj[keyMap[UID]] = clean(value);
+				currentObj[keyMap[UID]] = clean(Math.floor((Math.random() * 10000) + 1)); //calendar webxdc is not able to delete events if their id isn't a number
 			case START_DATE:
 				//try to get the date value
 				currentObj[keyMap[START_DATE]] = calenDate(value); //JSON.stringify(calenDate(value));
