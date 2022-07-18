@@ -1,15 +1,13 @@
 // let icsText = "";
 
 //get text from the clipboard
-function getClipboard() {
-	navigator.clipboard.readText().then((responseText) => {
-		if (responseText !== "") {
+function getClipboard(text) {
+		if (text !== "") {
 			// console.log(responseText);
-			console.log(parseIcsToJSON(responseText));
+			console.log(parseIcsToJSON(text));
 		} else {
 			console.log("No text on the clipboard!");
 		}
-	});
 }
 
 //transform ics dates to Date timestamps
@@ -100,7 +98,7 @@ function parseIcsToJSON(icsData) {
                 currentObj[keyMap[UID]] = clean(value);
 			case START_DATE:
 				//try to get the date value
-				currentObj[keyMap[START_DATE]] = calenDate(value);
+				currentObj[keyMap[START_DATE]] = calenDate(value); //JSON.stringify(calenDate(value));
 				break;
 			case END_DATE:
 				currentObj[keyMap[END_DATE]] = calenDate(value);
@@ -132,7 +130,6 @@ function parseJSONToWebxdcUpdate(JSON) {
         let event = JSON[evt];
         // console.log(event);
         let date = new Date(event.startDate);
-		console.log(date);
         let info = window.webxdc.selfName + " added data from ics file";
         let color = "black";
         window.webxdc.sendUpdate(

@@ -9,6 +9,7 @@
 		/>
 		<script src="webxdc.js"></script>
 		<script async src="ics-json.js"></script>
+		<script async src="json-ics.js"></script>
 		<link href="calendar.css" rel="stylesheet" />
 		<script async src="calendar.js"></script>
 		<script src="inobounce.js"></script>
@@ -51,7 +52,16 @@
 				</div>
 				<button class="eventBtn" id="evt-save">Add event</button>
 				<button class="eventBtn" id="evt-close">Close</button>
-				<button class="eventBtn" id="evt-import">Import from clipboard</button>
+				<button class="eventBtn" id="evt-imp-exp">Import/export events</button>
+			</div>
+
+			<div id="importScreen">
+				<h1>Import/export data</h1>
+				<p>Paste some data in ICS format to import the events or click "export" to get your current events in ICS format</p>
+				<textarea id="importArea"></textarea>
+				<button class="eventBtn" id="evt-import">Import ICS data</button>
+				<button class="eventBtn" id="evt-export">Export data to ICS file</button>
+				<button class="eventBtn" id="closeImport">Close</button>
 			</div>
 
 			<div id="dateSel">

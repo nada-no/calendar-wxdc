@@ -49,6 +49,11 @@ var cal = {
 	touchendX: 0,
 	calendar: null,
 	import: null,
+	export: null,
+	importScreen: null,
+	importScrBtn: null,
+	importArea: null,
+	closeImportBtn: null,
 
 	// (B) INIT CALENDAR
 	init: () => {
@@ -71,6 +76,7 @@ var cal = {
 		document.getElementById("evt-close").onclick = cal.close;
 		cal.hfSave.onclick = cal.save;
 		cal.events = [];
+		events= cal.events; //link to the export var
 		cal.eventsView = document.getElementById("eventsDay");
 		cal.eventsView.classList.add("ninja");
 		cal.evCards = document.getElementById("evt-cards");
@@ -88,8 +94,19 @@ var cal = {
 		cal.calendar.classList.add("ninja");
 		cal.import = document.getElementById("evt-import");
 		cal.import.onclick = () => {
-			getClipboard();
+			getClipboard(cal.importArea.value);
 		};
+		cal.export = document.getElementById("evt-export");
+		cal.export.onclick = () => {
+			cal.importArea.value = setClipboard();
+		};
+		cal.importScreen = document.getElementById("importScreen");
+		cal.importScreen.classList.add("ninja");
+		cal.importScrBtn = document.getElementById("evt-imp-exp");
+		cal.importScrBtn.onclick = cal.openImport;
+		cal.importArea = document.getElementById("importArea");
+		cal.closeImportBtn = document.getElementById("closeImport");
+		cal.closeImportBtn.onclick = cal.closeImport;
 
 		// swipe listeners for mobile
 		cal.container.addEventListener(
@@ -525,6 +542,14 @@ var cal = {
 	closeDateSel: () => {
 		cal.container.classList.remove("ninja");
 		cal.dateSel.classList.add("ninja");
+	},
+
+	openImport: () => {
+		cal.importScreen.classList.remove("ninja");
+	},
+
+	closeImport: () => {
+		cal.importScreen.classList.add("ninja");
 	},
 };
 window.addEventListener("load", cal.init);
