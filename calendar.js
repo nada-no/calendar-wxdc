@@ -395,9 +395,17 @@ var cal = {
 		for (const i in dayEvents) {
 			var eventBox = document.createElement("div");
 			var remove = document.createElement("span");
+			var exportBtn = document.createElement("span");
 			var data = document.createElement("p");
 			var author = document.createElement("p");
 			var lilHeader = document.createElement("div");
+
+			exportBtn.innerHTML = "Export";
+			exportBtn.setAttribute("data-id", dayEvents[i].id);
+			exportBtn.setAttribute("class", "event-export");
+			exportBtn.onclick = (ev) => {
+				cal.exportOne(ev.target.getAttribute("data-id"));
+			};
 			remove.innerHTML = "&#x2715";
 			remove.setAttribute("data-id", dayEvents[i].id);
 			remove.onclick = (ev) => {
@@ -407,6 +415,7 @@ var cal = {
 			author.classList.add("evt-view-name");
 			lilHeader.appendChild(author);
 			lilHeader.appendChild(remove);
+			lilHeader.appendChild(exportBtn);
 			eventBox.appendChild(lilHeader);
 			data.textContent = dayEvents[i].data;
 			data.classList.add("evt-data");
@@ -552,6 +561,14 @@ var cal = {
 		cal.importArea.value = "";
 		cal.importScreen.classList.add("ninja");
 		cal.close();
+	},
+
+	exportOne: (id) => {
+		let event = cal.events.filter((ev)=> {return Number.parseInt(ev.id) === Number.parseInt(id)});
+		let icsString = makeString(event);
+		cal.importScreen.classList.remove("ninja");
+		cal.eventsView.classList.add("ninja");
+		cal.importArea.value = icsString;
 	},
 };
 window.addEventListener("load", cal.init);

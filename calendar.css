@@ -170,8 +170,15 @@ select {
 .evt-view span {
   margin-top: -3px;
   font-size: 18px;
+  margin-left: 10px;
+  height: 25px;
   float: right;
   cursor: pointer;
+}
+
+.evt-view .event-export {
+  font-size: 12px;
+  margin-top: 0;
 }
 
 .block>label {

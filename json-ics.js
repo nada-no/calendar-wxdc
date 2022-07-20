@@ -28,7 +28,7 @@ function makeICS(start, end, title = "", location = "") {
  */
 function makeString(events) {
 	let icsString = "BEGIN:VCALENDAR" + SEPARATOR;
-    console.log(events);
+    // console.log(events);
    
 	icsString +=
 		"VERSION:2.0" + SEPARATOR +
